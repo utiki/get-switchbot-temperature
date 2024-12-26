@@ -2,7 +2,6 @@ import os
 import switchbot_api
 import jma
 from datetime import datetime
-import schedule
 import time
 import logging
 
@@ -80,9 +79,12 @@ def setup_log_dir():
 
 if __name__ == "__main__":
     setup_log_dir()
-        
-    schedule.every(1).minutes.do(run)
     logger = setup_logger()
+    last_minute = datetime.now
     while True:
-        schedule.run_pending()
+        now = datetime.now() 
+        if now.minute != last_minute:
+            print(last_minute)
+            run()
+            last_minute = now.minute
         time.sleep(1)
