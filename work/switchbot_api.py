@@ -46,10 +46,10 @@ def get_device_status(device_id):
     
 def get_house_device_temperature():
     house_thermometer_id = os.getenv('HOUSE_THERMOMETER_ID')
-    temperature = get_device_status(house_thermometer_id)["body"]["temperature"]
+    temperature: float  = get_device_status(house_thermometer_id)["body"]["temperature"]
     return temperature
 
 def get_outside_device_temperature():
     outside_thermometer_id = os.getenv('OUTSIDE_THERMOMETER_ID')
-    temperature = get_device_status(outside_thermometer_id)["body"]["temperature"]
+    temperature: float = get_device_status(outside_thermometer_id)["body"]["temperature"]
     return temperature

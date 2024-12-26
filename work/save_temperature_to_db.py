@@ -5,7 +5,7 @@ from datetime import datetime
 import time
 import logging
 
-from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, Float
 from sqlalchemy.orm import sessionmaker, declarative_base
 
 Base = declarative_base()
@@ -16,8 +16,8 @@ class Temperatures(Base):
     __tablename__ = 'temperatures'
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=datetime.now)
-    house_temperature = Column(Integer)
-    outside_temperature = Column(Integer)
+    house_temperature = Column(Float)
+    outside_temperature = Column(Float)
     weather = Column(String)
 
 DATABASE_URL = os.getenv('DATABASE_URL')
