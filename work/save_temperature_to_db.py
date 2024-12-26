@@ -84,7 +84,6 @@ if __name__ == "__main__":
     while True:
         now = datetime.now() 
         if now.minute != last_minute:
-            print(last_minute)
             run()
             last_minute = now.minute
         time.sleep(1)
