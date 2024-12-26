@@ -73,9 +73,14 @@ def run():
     weather = jma.get_northwest_chiba_weather()
     insert_temperatures_record(house_data, outside_data, weather)
 
-
+def setup_log_dir():
+    log_dir_name = "logs"
+    if not os.path.isdir(log_dir_name):
+        os.mkdir(log_dir_name)
 
 if __name__ == "__main__":
+    setup_log_dir()
+        
     schedule.every(1).minutes.do(run)
     logger = setup_logger()
     while True:
