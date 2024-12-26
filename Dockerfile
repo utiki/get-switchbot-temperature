@@ -17,4 +17,5 @@ COPY requirements.txt ./
 RUN pip install --no-warn-script-location --upgrade pip 
 RUN pip install --no-warn-script-location -r requirements.txt
 RUN mkdir -p logs
-CMD ["python", "save_temperature_to_db.py"]
+RUN chmod 644 logs
+CMD ["python3", "save_temperature_to_db.py"]
