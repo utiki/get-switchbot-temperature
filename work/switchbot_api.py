@@ -32,17 +32,24 @@ def request(url):
 
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        return response.json()
+        return response.status_code, response.json()
     else:
         return response.status_code, response.text
     
+def request_loop(url):
+    status_code, json = request(url)
+    while status_code != 200:
+        time.sleep(5)
+        status_code, json = request(url)
+    return json
+
 def get_all_device_id():
     url = "https://api.switch-bot.com/v1.1/devices"
-    return request(url)
+    return request_loop(url)
     
 def get_device_status(device_id):
     url = f"https://api.switch-bot.com/v1.1/devices/{device_id}/status"
-    return request(url)
+    return request_loop(url)
     
 def get_house_device_temperature():
     house_thermometer_id = os.getenv('HOUSE_THERMOMETER_ID')
