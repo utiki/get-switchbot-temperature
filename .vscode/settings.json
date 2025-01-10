@@ -1,0 +1,4 @@
+{
+  "cSpell.words": ["sessionmaker", "switchbot"],
+  "python.analysis.extraPaths": ["./work", "./db"]
+}

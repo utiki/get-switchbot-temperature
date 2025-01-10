@@ -1,9 +1,13 @@
 import os
+import sys
 import jma
 import time
 from datetime import datetime
 from logger import setup_logger, logger
 import switchbot_api
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent / "db"))
 from database import insert_temperatures_record, insert_weather_record
 
 last_date = datetime.now().date()

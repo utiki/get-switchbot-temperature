@@ -1,12 +1,10 @@
 import os
-from logger import logger
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, desc, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 from models import Temperatures, Weather
-
 
 user = os.getenv("POSTGRES_USER")
 password = os.getenv("POSTGRES_PASSWORD")
@@ -28,12 +26,11 @@ def insert_temperatures_record(house_temp, outside_temp):
         )
         db.add(temperatures)
         db.commit()
-        logger.info(f"レコードを登録しました")
     except Exception as e:
         db.rollback()
-        logger.info(f"レコードの登録に失敗しました: {e}")
     finally:
         db.close()
+        
         
 def insert_weather_record(weather_report):
     try:
@@ -43,9 +40,31 @@ def insert_weather_record(weather_report):
         )
         db.add(weather)
         db.commit()
-        logger.info(f"レコードを登録しました")
     except Exception as e:
         db.rollback()
-        logger.info(f"レコードの登録に失敗しました: {e}")
+    finally:
+        db.close()
+
+
+def get_temperatures_by_latest():
+    try:
+        db = SessionLocal()
+        record = db.query(Temperatures).order_by(desc(Temperatures.id)).first()
+        return record.house_temperature, record.outside_temperature
+    except Exception as e:
+        db.rollback()
+    finally:
+        db.close()
+
+
+def get_weather_by_date(date):
+    try:
+        db = SessionLocal()
+        record = db.query(Weather).filter(
+            func.date(Weather.created_at)  == date
+        ).first()
+        return record.weather
+    except Exception as e:
+        db.rollback()
     finally:
         db.close()

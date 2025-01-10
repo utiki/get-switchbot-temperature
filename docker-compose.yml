@@ -1,6 +1,6 @@
 services:
   python3:
-    build: .
+    build: ./work
     container_name: "python3"
     restart: unless-stopped
     working_dir: "/work"
@@ -9,6 +9,28 @@ services:
     tty: true
     volumes:
       - ./work:/work
+      - ./db:/db
+    depends_on:
+      my_postgres:
+        condition: service_healthy
+
+  fastapi_app:
+    build: ./fastapi_app
+    container_name: "fastapi_app"
+    restart: unless-stopped
+    working_dir: "/fastapi_app"
+    env_file:
+      - .env
+    tty: true
+    volumes:
+      - ./fastapi_app:/fastapi_app
+      - ./db:/db
+    ports:
+      - "8000:8000"
+    depends_on:
+      my_postgres:
+        condition: service_healthy
+
 
   my_postgres:
     image: postgres:latest
@@ -22,6 +44,11 @@ services:
       - "5000:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
