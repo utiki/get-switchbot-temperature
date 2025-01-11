@@ -10,7 +10,7 @@ user = os.getenv("POSTGRES_USER")
 password = os.getenv("POSTGRES_PASSWORD")
 host = os.getenv("POSTGRES_HOST")
 port = os.getenv("POSTGRES_PORT")
-db_name = os.getenv("POSTGRES_DB_NAME")
+db_name = os.getenv("POSTGRES_DB")
 DATABASE_URL = f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
 
 engine = create_engine(DATABASE_URL, echo=True)
