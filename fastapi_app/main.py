@@ -31,4 +31,5 @@ def read_root():
 
 @app.get("/weather")
 def read_root():
-    return get_weather_by_date()
+    date = date.today()
+    return get_weather_by_date(date)
