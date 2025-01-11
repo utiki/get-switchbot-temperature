@@ -29,6 +29,6 @@ app.add_middleware(
 def read_root():
     return get_temperatures_by_latest()
 
-@app.get("/weather/{date}")
+@app.get("/weather")
 def read_root():
-    return get_weather_by_date(date)
+    return get_weather_by_date()
