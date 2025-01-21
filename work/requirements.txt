@@ -2,4 +2,4 @@ python-dotenv
 pandas
 requests
 sqlalchemy 
-asyncpg
+psycopg2
