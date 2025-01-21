@@ -1,4 +1,5 @@
 import os
+from fastapi import HTTPException
 from sqlalchemy import create_engine, desc, func
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -53,6 +54,7 @@ def get_temperatures_by_latest():
         return record.house_temperature, record.outside_temperature
     except Exception as e:
         db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
     finally:
         db.close()
 
@@ -66,5 +68,6 @@ def get_weather_by_date(date):
         return record.weather
     except Exception as e:
         db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
     finally:
         db.close()
