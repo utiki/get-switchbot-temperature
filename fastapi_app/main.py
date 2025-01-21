@@ -1,12 +1,14 @@
 import sys
 from pathlib import Path
-from fastapi import FastAPI
-from datetime import datetime, date
+from fastapi import FastAPI, Depends
+from datetime import date
 
 sys.path.append(str(Path(__file__).parent.parent / "db"))
-from database import get_temperatures_by_latest, get_weather_by_date
-import models
+from database import get_session
+from models import Temperatures, Weather
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import desc, func, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 app = FastAPI()
 
@@ -24,11 +26,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 @app.get("/temperature")
-def read_root():
-    return get_temperatures_by_latest()
+async def read_temperature(session: AsyncSession = Depends(get_session)):
+    record = await session.execute(
+        select(Temperatures).order_by(
+            desc(Temperatures.id)
+        )    
+    )
+    temperatures = record.scalars().first()
+    return temperatures.house_temperature, temperatures.outside_temperature
 
 @app.get("/weather")
-def read_root():
-    return get_weather_by_date(date.today())
+async def read_weather(session: AsyncSession = Depends(get_session)):
+    record = await session.execute(select(Weather).where(
+        func.date(Weather.created_at) == date.today()
+    ))
+    weather = record.scalars().first()
+    return weather.weather

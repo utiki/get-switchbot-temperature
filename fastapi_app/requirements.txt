@@ -1,6 +1,6 @@
 fastapi[all] 
 uvicorn
 sqlalchemy
-psycopg2
 python-jose 
 passlib
+asyncpg

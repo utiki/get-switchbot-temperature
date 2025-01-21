@@ -1,3 +1,4 @@
+import asyncio
 import os
 import sys
 import jma
@@ -8,43 +9,47 @@ import switchbot_api
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent / "db"))
-from database import insert_temperatures_record, insert_weather_record
+from database import init_db, insert_temperatures_record, insert_weather_record
 
 last_date = datetime.now().date()
 
-def on_date_change():
+async def on_date_change():
     current_date = datetime.now().date()
     global last_date
     if current_date != last_date:
         setup_logger()
         logger.info("Date changed, switching log file.")
-        insert_weather_record(jma.get_northwest_chiba_weather())
+        await insert_weather_record(jma.get_northwest_chiba_weather())
         last_date = current_date
 
-def run():
-    on_date_change()
+async def run():
+    await on_date_change()
     logger.info("run")
     house_data = switchbot_api.get_house_device_temperature()
     outside_data = switchbot_api.get_outside_device_temperature()
-    insert_temperatures_record(house_data, outside_data)
+    await insert_temperatures_record(house_data, outside_data)
 
 def setup_log_dir():
     log_dir_name = "logs"
     if not os.path.isdir(log_dir_name):
         os.mkdir(log_dir_name)
 
-def init():
+async def init():
     setup_log_dir()
     setup_logger()
+    await init_db()
+    await insert_weather_record(jma.get_northwest_chiba_weather())
     
-if __name__ == "__main__":
-    init()
+async def main():
+    await init()
     last_minute = datetime.now().minute
-    insert_weather_record(jma.get_northwest_chiba_weather())
     
     while True:
         now = datetime.now() 
         if now.minute != last_minute:
-            run()
+            await run()
             last_minute = now.minute
         time.sleep(1)
+        
+if __name__ == "__main__":
+    asyncio.run(main())
