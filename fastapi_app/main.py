@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from datetime import datetime, date
 
 sys.path.append(str(Path(__file__).parent.parent / "db"))
@@ -37,10 +37,16 @@ async def startup():
 @app.get("/temperature")
 @cache(expire=60) 
 def get_temperature():
-    return get_temperatures_by_latest()
+    temperature = get_temperatures_by_latest()
+    if temperature == 400:
+        raise HTTPException(status_code=400, detail="Bad Request: Missing parameter")
+    return temperature
 
 
 @app.get("/weather")
 @cache(expire=60) 
 def get_weather():
-    return get_weather_by_date(date.today())
+    weather =  get_weather_by_date(date.today())
+    if weather == 400:
+        raise HTTPException(status_code=400, detail="Bad Request: Missing parameter")
+    return get_weather_by_date

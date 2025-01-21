@@ -50,6 +50,8 @@ def get_temperatures_by_latest():
     try:
         db = SessionLocal()
         record = db.query(Temperatures).order_by(desc(Temperatures.id)).first()
+        if record is None:
+            return 400
         return record.house_temperature, record.outside_temperature
     except Exception as e:
         db.rollback()
@@ -63,6 +65,8 @@ def get_weather_by_date(date):
         record = db.query(Weather).filter(
             func.date(Weather.created_at)  == date
         ).first()
+        if record is None:
+            return 400
         return record.weather
     except Exception as e:
         db.rollback()
