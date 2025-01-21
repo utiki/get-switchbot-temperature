@@ -44,11 +44,15 @@ services:
       - "5000:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+    command: >
+      postgres -c config_file=/etc/postgresql/postgresql.conf
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: ["CMD-SHELL", "pg_isready -U admin -d weather"]
+      interval: 10s      # ヘルスチェック間隔
+      timeout: 5s        # タイムアウト
+      retries: 5         # リトライ回数
+      start_period: 30s 
 
 volumes:
   postgres_data:
