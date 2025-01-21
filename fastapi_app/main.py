@@ -9,10 +9,6 @@ from models import Temperatures, Weather
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from redis.asyncio import Redis
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
 
 app = FastAPI()
 
@@ -30,13 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.on_event("startup")
-async def startup():
-    redis = Redis(host="localhost", port=6379)
-    FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
-
 @app.get("/temperature")
-@cache(expire=60) 
 async def read_temperature(session: AsyncSession = Depends(get_session)):
     record = await session.execute(
         select(Temperatures).order_by(
@@ -47,7 +37,6 @@ async def read_temperature(session: AsyncSession = Depends(get_session)):
     return temperatures.house_temperature, temperatures.outside_temperature
 
 @app.get("/weather")
-@cache(expire=60) 
 async def read_weather(session: AsyncSession = Depends(get_session)):
     record = await session.execute(select(Weather).where(
         func.date(Weather.created_at) == date.today()

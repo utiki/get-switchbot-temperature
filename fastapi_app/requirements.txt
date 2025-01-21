@@ -4,7 +4,3 @@ sqlalchemy
 python-jose 
 passlib
 asyncpg
-redis
-setuptools
-fastapi-cache2
-fastapi-cache2[redis]
