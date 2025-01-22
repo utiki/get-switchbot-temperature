@@ -29,7 +29,7 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    redis = Redis(host="localhost", port=6379)
+    redis = Redis(host="radis", port=6379, decode_responses=True)
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
     
     
@@ -43,7 +43,6 @@ async def get_temperature():
 
 
 @app.get("/weather")
-@FastAPICache.cache(expire=60)
 async def get_weather():
     weather =  get_weather_by_date(date.today())
     if weather == 400:
