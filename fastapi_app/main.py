@@ -10,7 +10,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from redis.asyncio import Redis
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
-from fastapi_cache.decorator import cache
 
 app = FastAPI()
 
@@ -35,8 +34,8 @@ async def startup():
     
     
 @app.get("/temperature")
-@cache(expire=60) 
-def get_temperature():
+@FastAPICache.cache(expire=60)
+async def get_temperature():
     temperature = get_temperatures_by_latest()
     if temperature == 400:
         raise HTTPException(status_code=400, detail="Bad Request: Missing parameter")
@@ -44,9 +43,9 @@ def get_temperature():
 
 
 @app.get("/weather")
-@cache(expire=60) 
-def get_weather():
+@FastAPICache.cache(expire=60)
+async def get_weather():
     weather =  get_weather_by_date(date.today())
     if weather == 400:
         raise HTTPException(status_code=400, detail="Bad Request: Missing parameter")
-    return get_weather_by_date
+    return weather
