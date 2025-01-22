@@ -30,6 +30,13 @@ services:
     depends_on:
       my_postgres:
         condition: service_healthy
+  redis:
+    image: redis:6.2  # Redis の公式イメージ
+    ports:
+      - "6379:6379"  # Redis の公開ポート
+    volumes:
+      - redis-data:/data
+    command: ["redis-server", "--appendonly", "yes"]
 
   my_postgres:
     image: postgres:latest
@@ -55,3 +62,4 @@ services:
 
 volumes:
   postgres_data:
+  redis-data:

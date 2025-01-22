@@ -5,3 +5,4 @@ passlib
 setuptools
 fastapi-cache2
 psycopg2
+redis[asyncio]
