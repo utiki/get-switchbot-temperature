@@ -1,10 +1,7 @@
 fastapi[all] 
 uvicorn
 sqlalchemy
-aioredis
 passlib
-redis
 setuptools
 fastapi-cache2
-fastapi-cache2[redis]
-psycopg2-binary
+psycopg2
