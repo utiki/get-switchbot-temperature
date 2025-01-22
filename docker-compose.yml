@@ -30,7 +30,15 @@ services:
     depends_on:
       my_postgres:
         condition: service_healthy
-
+  redis:
+    image: redis:6.2  # Redis の公式イメージ
+    ports:
+      - "6379:6379"  # Redis の公開ポート
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   my_postgres:
     image: postgres:latest
