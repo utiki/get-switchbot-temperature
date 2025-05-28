@@ -40,7 +40,7 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
 
   my_postgres:
-    image: postgres:latest
+    image: postgres:17
     container_name: my-postgres
     restart: unless-stopped
     environment:
@@ -58,8 +58,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U admin -d weather"]
       interval: 10s # ヘルスチェック間隔
       timeout: 5s # タイムアウト
-      retries: 5 # リトライ回数
-      start_period: 30s
+      retries: 10 # リトライ回数
 
 volumes:
   postgres_data:
